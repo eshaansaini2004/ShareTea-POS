@@ -598,7 +598,7 @@ const ManagerReportView = () => {
             acc + (Number(item.quantitySold || item.quantity_sold) || 0), 0);
 
         const totalSales = salesData.reduce((acc, item) =>
-            acc + (item.totalCost || item.total_cost || 0), 0);
+            acc + (parseFloat(item.totalCost || item.total_cost || 0) || 0), 0);
 
         return (
             <Paper sx={{p: 3, mt: 3}}>
@@ -645,15 +645,15 @@ const ManagerReportView = () => {
                         </TableHead>
                         <TableBody>
                             {salesData.map((item) => {
-                                const salesAmount = item.totalCost || item.total_cost || 0;
-                                const quantity = item.quantitySold || item.quantity_sold || 0;
+                                const salesAmount = parseFloat(item.totalCost || item.total_cost || 0);
+                                const quantity = parseInt(item.quantitySold || item.quantity_sold || 0);
                                 return (
                                     <TableRow key={item.productId || item.product_id}>
                                         <TableCell>{item.productId || item.product_id}</TableCell>
                                         <TableCell>{item.productName || item.product_name}</TableCell>
                                         <TableCell>{item.productType || item.product_type}</TableCell>
                                         <TableCell align="right">{quantity}</TableCell>
-                                        <TableCell align="right">${salesAmount.toFixed(2)}</TableCell>
+                                        <TableCell align="right">${isNaN(salesAmount) ? '0.00' : salesAmount.toFixed(2)}</TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -667,7 +667,7 @@ const ManagerReportView = () => {
                                     <Typography fontWeight="bold">{totalQuantity}</Typography>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Typography fontWeight="bold">${totalSales.toFixed(2)}</Typography>
+                                    <Typography fontWeight="bold">${isNaN(totalSales) ? '0.00' : totalSales.toFixed(2)}</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>

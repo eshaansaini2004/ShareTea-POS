@@ -1,7 +1,7 @@
 // handles all authentication-related functionality with google oauth
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-const REDIRECT_URL = window.location.origin + '/oauth2callback';
+const REDIRECT_URL = window.location.origin + '/oauth/callback';
 
 // permission scopes we need from google - just basic profile info and email
 const SCOPES = [
@@ -11,6 +11,12 @@ const SCOPES = [
 
 // creates the oauth url for redirecting users to google login
 export const getAuthUrl = () => {
+    // Check if we have a valid client ID
+    if (!CLIENT_ID || CLIENT_ID === 'your_google_client_id_here') {
+        console.warn('No valid Google Client ID configured. OAuth will be disabled.');
+        return null;
+    }
+    
     const params = new URLSearchParams({
         client_id: CLIENT_ID,
         redirect_uri: REDIRECT_URL,
@@ -20,7 +26,11 @@ export const getAuthUrl = () => {
         access_type: 'online'
     });
 
-    return `${GOOGLE_AUTH_URL}?${params.toString()}`;
+    const authUrl = `${GOOGLE_AUTH_URL}?${params.toString()}`;
+    console.log('🔐 Google OAuth URL:', authUrl);
+    console.log('🔑 Using Client ID:', CLIENT_ID);
+    
+    return authUrl;
 };
 
 // get user info using access token

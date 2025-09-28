@@ -16,7 +16,7 @@ const pool = new Pool({
     database: process.env.PSQL_DATABASE,
     password: process.env.PSQL_PASSWORD,
     port: process.env.PSQL_PORT,
-    ssl: {rejectUnauthorized: false}
+    ssl: process.env.SSL_MODE === 'true' ? {rejectUnauthorized: false} : false
 });
 
 process.on('SIGINT', function () {
@@ -43,7 +43,7 @@ app.put('/api/products/:productId', async (req, res) => {
 
     try {
         const result = await pool.query(
-            'UPDATE product SET product_name = $1, product_cost = $2 WHERE product_id = $3 RETURNING *;',
+            'UPDATE products SET product_name = $1, product_cost = $2 WHERE product_id = $3 RETURNING *;',
 
             [product_name.trim(), product_cost, productId]
         );
@@ -63,7 +63,7 @@ app.put('/api/products/:productId', async (req, res) => {
 app.get('/api/products', async (req, res) => {
     try {
         // get base product information
-        const productsResult = await pool.query('SELECT product_id, product_name, product_cost, product_type, allergens FROM product ORDER BY product_name ASC;');
+        const productsResult = await pool.query('SELECT product_id, product_name, product_cost, base_cost, product_type, category_id, allergens, order_count, price_increased FROM products ORDER BY product_name ASC;');
 
         // get today's date (start of day)
         const todayStart = new Date();
@@ -116,7 +116,7 @@ app.post('/api/products', async (req, res) => {
     }
     try {
         const result = await pool.query(
-            'INSERT INTO product (product_name, product_cost, product_type, allergens) VALUES ($1, $2, $3, $4) RETURNING *;',
+            'INSERT INTO products (product_name, product_cost, product_type, allergens) VALUES ($1, $2, $3, $4) RETURNING *;',
             [product_name.trim(), product_cost, product_type, allergens || 'None']
         );
         res.status(201).json(result.rows[0]);
@@ -213,7 +213,7 @@ app.get('/api/reports/x-report', async (req, res) => {
               COUNT(ct.order_id) AS order_count, 
               SUM(p.product_cost) AS sales_total
             FROM customer_transaction ct
-                JOIN product p
+                JOIN products p
             ON ct.product_id = p.product_id
             WHERE ct.purchase_date > $1
             GROUP BY EXTRACT (HOUR FROM ct.purchase_date)
@@ -286,11 +286,11 @@ app.get('/api/reports/z-report', async (req, res) => {
         const salesQuery = `
             SELECT SUM(p.product_cost) AS total_sales
             FROM customer_transaction ct
-                     JOIN product p ON ct.product_id = p.product_id
+                     JOIN products p ON ct.product_id = p.product_id
             WHERE ct.purchase_date > $1
         `;
         const salesResult = await pool.query(salesQuery, [lastClosureTimestamp]);
-        const totalSales = salesResult.rows[0].total_sales || 0;
+        const totalSales = parseFloat(salesResult.rows[0].total_sales) || 0;
 
         // all transactions since last business closure
         const transactionsQuery = `
@@ -305,7 +305,7 @@ app.get('/api/reports/z-report', async (req, res) => {
         const topItemQuery = `
             SELECT p.product_name, COUNT(*) AS order_count
             FROM customer_transaction ct
-                     JOIN product p ON ct.product_id = p.product_id
+                     JOIN products p ON ct.product_id = p.product_id
             WHERE ct.purchase_date > $1
             GROUP BY p.product_name
             ORDER BY order_count DESC LIMIT 1
@@ -353,7 +353,7 @@ app.get('/api/reports/sales', async (req, res) => {
                    SUM(p.product_cost) AS total_cost,
                    COUNT(*)            AS quantity_sold
             FROM customer_transaction ct
-                     JOIN product p ON ct.product_id = p.product_id
+                     JOIN products p ON ct.product_id = p.product_id
             WHERE ct.purchase_date >= $1::date
               AND ct.purchase_date < ($2::date + INTERVAL '1 day')
             GROUP BY ct.product_id, p.product_name, p.product_type
@@ -425,7 +425,7 @@ app.delete('/api/products/:productId', async (req, res) => {
     try {
         // first, check if the product exists
         const checkResult = await pool.query(
-            'SELECT product_id FROM product WHERE product_id = $1',
+            'SELECT product_id FROM products WHERE product_id = $1',
             [productId]
         );
 
@@ -447,7 +447,7 @@ app.delete('/api/products/:productId', async (req, res) => {
 
         // delete the product
         await pool.query(
-            'DELETE FROM product WHERE product_id = $1 RETURNING product_id',
+            'DELETE FROM products WHERE product_id = $1 RETURNING product_id',
             [productId]
         );
 
@@ -510,7 +510,7 @@ app.post('/api/transactions', async (req, res) => {
 
             // Get the product name for inventory lookup
             const productResult = await pool.query(
-                'SELECT product_name FROM product WHERE product_id = $1',
+                'SELECT product_name FROM products WHERE product_id = $1',
                 [product_id]
             );
 

@@ -39,8 +39,8 @@ function OAuthCallback() {
 
                 saveUserToStorage(user);
 
-                // redirect back to main page
-                navigate('/');
+                // redirect back to main page and force refresh to ensure user state is loaded
+                window.location.href = '/';
             }
             catch (err) {
                 console.error('Authentication error:', err);

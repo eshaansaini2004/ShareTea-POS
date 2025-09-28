@@ -38,23 +38,28 @@ function MenuBoardView() {
 
     // category colors for visual distinction
     const categoryColors = {
-        milk_tea: theme.palette.categories.milkTea,
-        fruit_tea: theme.palette.categories.fruitTea,
-        classic_tea: theme.palette.categories.classicTea
+        milk_tea: theme.palette.categories?.milkTea || '#e0ba6e',
+        fruit_tea: theme.palette.categories?.fruitTea || '#4caf50',
+        classic_tea: theme.palette.categories?.classicTea || '#1793d1'
     };
 
     useEffect(() => {
         const loadProducts = async () => {
             try {
-                console.log('Fetching products for menu board...');
+                console.log('MenuBoard: Fetching products...');
                 const data = await fetchProducts();
-                console.log('Products received:', data);
-                setProducts(data);
+                console.log('MenuBoard: Products received:', data);
+                if (data && Array.isArray(data)) {
+                    setProducts(data);
+                } else {
+                    console.error('MenuBoard: Invalid data format received:', data);
+                    setError('Invalid data format received');
+                }
                 setLoading(false);
             }
             catch (err) {
-                console.error('Error details:', err);
-                setError('Failed to load products');
+                console.error('MenuBoard: Error details:', err);
+                setError('Failed to load products for menu board');
                 setLoading(false);
             }
         };

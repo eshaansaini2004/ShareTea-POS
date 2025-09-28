@@ -54,6 +54,30 @@ function App() {
         }
     }, []);
 
+    // check for user after OAuth callback redirect
+    useEffect(() => {
+        const checkUserAfterRedirect = () => {
+            const storedUser = getUserFromStorage();
+            if (storedUser && !user) {
+                setUser(storedUser);
+            }
+        };
+        
+        // Check immediately
+        checkUserAfterRedirect();
+        
+        // Check multiple times to handle async storage updates
+        const timeoutId1 = setTimeout(checkUserAfterRedirect, 100);
+        const timeoutId2 = setTimeout(checkUserAfterRedirect, 500);
+        const timeoutId3 = setTimeout(checkUserAfterRedirect, 1000);
+        
+        return () => {
+            clearTimeout(timeoutId1);
+            clearTimeout(timeoutId2);
+            clearTimeout(timeoutId3);
+        };
+    }, [user]);
+
     // listen for changes to localStorage/sessionStorage to update user state
     useEffect(() => {
         function handleStorageChange() {
@@ -77,7 +101,20 @@ function App() {
 
     const handleLogin = () => {
         // redirect to Google OAuth login
-        window.location.href = getAuthUrl();
+        const authUrl = getAuthUrl();
+        if (authUrl) {
+            console.log('🔐 Redirecting to Google OAuth...');
+            window.location.href = authUrl;
+        } else {
+            console.warn('OAuth is disabled. Please configure REACT_APP_GOOGLE_CLIENT_ID in your .env file');
+            // For demo purposes, create a mock user
+            const mockUser = {
+                name: 'Demo User',
+                email: 'demo@example.com',
+                photo: ''
+            };
+            setUser(mockUser);
+        }
     };
 
     const handleLogout = () => {
@@ -154,7 +191,7 @@ function App() {
                         Method POS System
                     </Typography>
 
-                    {user && (
+                    {user ? (
                         <Box sx={{
                             mb: 4,
                             display: 'flex',
@@ -174,6 +211,25 @@ function App() {
                                 sx={{mt: 2}}
                             >
                                 Logout
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box sx={{
+                            mb: 4,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<LockIcon/>}
+                                onClick={handleLogin}
+                                size="large"
+                                sx={{mt: 2}}
+                            >
+                                Login / Demo Access
                             </Button>
                         </Box>
                     )}
@@ -218,9 +274,19 @@ function App() {
                                 >
                                     <CardActionArea
                                         onClick={() => {
-                                            if ((card.id === 'manager' || card.id === 'cashier') && !user) {
-                                                // Redirect to login if trying to access protected views without auth
-                                                handleLogin();
+                                            if (card.id === 'manager' || card.id === 'cashier') {
+                                                // Check for user in storage as well as state
+                                                const storedUser = getUserFromStorage();
+                                                if (!user && !storedUser) {
+                                                    // Redirect to login if trying to access protected views without auth
+                                                    handleLogin();
+                                                } else {
+                                                    // If we have a stored user but not in state, set it
+                                                    if (storedUser && !user) {
+                                                        setUser(storedUser);
+                                                    }
+                                                    setCurrentView(card.id);
+                                                }
                                             } else {
                                                 setCurrentView(card.id);
                                             }
@@ -457,7 +523,7 @@ function App() {
 
                     <Routes>
                         <Route
-                            path="/oauth2callback"
+                            path="/oauth/callback"
                             element={<OAuthCallback/>}
                         />
                         <Route path="*" element={renderView()}/>

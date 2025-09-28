@@ -1,70 +1,207 @@
-# Getting Started with Create React App
+# Tea Shop Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React-based frontend for the Tea Shop Kiosk System with Material-UI components and responsive design.
 
-## Available Scripts
+## 🚀 Quick Start
 
-In the project directory, you can run:
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-### `npm start`
+2. **Set up Environment Variables**
+   Create a `.env` file with:
+   ```env
+   REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id_here
+   REACT_APP_GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   REACT_APP_OPENWEATHER_API_KEY=your_openweather_api_key_here
+   REACT_APP_API_URL=http://localhost:8080
+   REACT_APP_API_KEY=
+   ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. **Start Development Server**
+   ```bash
+   npm start
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The app will open at `http://localhost:3000`
 
-### `npm test`
+## 🎯 Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Customer Interface (Kiosk Mode)
+- **Menu Board** - Browse 21 tea products by category
+- **Product Customization** - Ice level, toppings, special requests
+- **Shopping Cart** - Add/remove items, view total
+- **Order Confirmation** - Review and confirm orders
+- **Receipt Generation** - Digital receipts with order details
 
-### `npm run build`
+### Manager Dashboard
+- **Product Management** - Add/edit/delete menu items
+- **Inventory Tracking** - Monitor stock levels
+- **Sales Reports** - X-Report, Z-Report, sales analytics
+- **Order History** - View all transactions
+- **Business Analytics** - Revenue and performance metrics
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Cashier Interface
+- **Order Processing** - Handle customer orders
+- **Payment Processing** - Process payments
+- **Transaction Management** - View and manage orders
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🎨 UI Components
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Core Components
+- `ProductCard` - Individual product display
+- `ProductGrid` - Product listing with filtering
+- `CartSection` - Shopping cart management
+- `OrderSummary` - Order review and confirmation
+- `ReceiptDialog` - Receipt display
 
-### `npm run eject`
+### Management Components
+- `ManagerView` - Main manager dashboard
+- `ManagerProductView` - Product management
+- `ManagerInventoryView` - Inventory management
+- `ManagerReportView` - Reports and analytics
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Utility Components
+- `SearchBar` - Product search functionality
+- `CategorySelector` - Category filtering
+- `AllergenIcon` - Allergen information display
+- `WeatherModal` - Weather information
+- `TranslationControl` - Language switching
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🔧 Available Scripts
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- `npm start` - Start development server
+- `npm test` - Run tests
+- `npm run build` - Build for production
+- `npm run eject` - Eject from Create React App
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🎨 Styling
 
-## Learn More
+The app uses Material-UI (MUI) for consistent theming and responsive design:
+- **Dark/Light Theme** support
+- **High Contrast Mode** for accessibility
+- **Responsive Design** for all screen sizes
+- **Custom Color Palette** for tea shop branding
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🔐 Authentication
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Google OAuth Integration
+- Secure login with Google accounts
+- Automatic user session management
+- Role-based access control
+- Demo mode for testing without OAuth
 
-### Code Splitting
+### User Roles
+- **Customer** - Browse menu, place orders
+- **Cashier** - Process orders, handle payments
+- **Manager** - Full system access, reports, inventory
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🌐 API Integration
 
-### Analyzing the Bundle Size
+### Backend API
+- RESTful API calls to Node.js backend
+- Real-time data synchronization
+- Error handling and loading states
+- Automatic retry logic
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### External APIs
+- **Google OAuth** - User authentication
+- **OpenWeatherMap** - Weather data for recommendations
 
-### Making a Progressive Web App
+## 📱 Responsive Design
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The app is fully responsive and works on:
+- **Desktop** - Full feature set
+- **Tablet** - Optimized touch interface
+- **Mobile** - Kiosk mode for mobile devices
 
-### Advanced Configuration
+## ♿ Accessibility Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- **Screen Reader Support** - ARIA labels and descriptions
+- **Keyboard Navigation** - Full keyboard accessibility
+- **High Contrast Mode** - Enhanced visibility
+- **Font Size Controls** - Adjustable text size
+- **Color Blind Support** - Accessible color schemes
 
-### Deployment
+## 🧪 Testing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Running Tests
+```bash
+npm test
+```
 
-### `npm run build` fails to minify
+### Test Coverage
+- Component unit tests
+- API integration tests
+- User interaction tests
+- Accessibility tests
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🚀 Production Build
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Environment Variables for Production
+```env
+REACT_APP_API_URL=https://your-backend-domain.com
+REACT_APP_GOOGLE_CLIENT_ID=your_production_client_id
+REACT_APP_OPENWEATHER_API_KEY=your_production_api_key
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **App Not Loading**
+   - Check if backend is running on port 8080
+   - Verify API_URL in `.env`
+   - Check browser console for errors
+
+2. **OAuth Not Working**
+   - Verify Google Client ID
+   - Check redirect URI configuration
+   - Ensure OAuth consent screen is set up
+
+3. **Weather Not Loading**
+   - Check OpenWeatherMap API key
+   - Verify API key permissions
+   - Check network connectivity
+
+4. **Products Not Loading**
+   - Verify backend API is responding
+   - Check database connection
+   - Review API endpoint URLs
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ProductCard.js
+│   ├── CartSection.js
+│   ├── SearchBar.js
+│   └── ...
+├── views/              # Main application views
+│   ├── KioskView.js
+│   ├── ManagerView.js
+│   ├── MenuBoardView.js
+│   └── ...
+├── hooks/              # Custom React hooks
+│   ├── useCart.js
+│   ├── useProducts.js
+│   └── ...
+├── api.js              # API service layer
+├── authService.js      # Authentication service
+├── App.js              # Main application component
+└── theme.js            # Material-UI theme configuration
+```
+
+## 🤝 Contributing
+
+1. Follow the existing code style
+2. Add tests for new features
+3. Ensure accessibility compliance
+4. Update documentation as needed

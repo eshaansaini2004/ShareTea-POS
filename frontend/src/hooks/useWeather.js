@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { fetchWeather } from '../api';
 
-const useWeather = (defaultCity = 'College Station') => {
+const useWeather = (defaultCity = 'Houston') => {
     const [showWeatherModal, setShowWeatherModal] = useState(false);
     const [weatherData, setWeatherData] = useState(null);
     const [weatherLoading, setWeatherLoading] = useState(false);
