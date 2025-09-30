@@ -37,10 +37,15 @@ function OAuthCallback() {
                     photo: userInfo.picture || '',
                 };
 
+                console.log('🔐 OAuth Callback - User info:', user);
                 saveUserToStorage(user);
+                console.log('🔐 OAuth Callback - User saved to storage');
 
                 // redirect back to main page and force refresh to ensure user state is loaded
-                window.location.href = '/';
+                setStatus('Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
             }
             catch (err) {
                 console.error('Authentication error:', err);

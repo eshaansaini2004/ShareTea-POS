@@ -49,8 +49,10 @@ function App() {
     // check if user is already logged in when app first loads
     useEffect(() => {
         const storedUser = getUserFromStorage();
+        console.log('🔐 App - Checking stored user:', storedUser);
         if (storedUser) {
             setUser(storedUser);
+            console.log('🔐 App - User set from storage:', storedUser);
         }
     }, []);
 
@@ -523,7 +525,7 @@ function App() {
 
                     <Routes>
                         <Route
-                            path="/oauth/callback"
+                            path="/oauth2callback"
                             element={<OAuthCallback/>}
                         />
                         <Route path="*" element={renderView()}/>
