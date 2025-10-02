@@ -11,11 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-    user: process.env.PGUSER || process.env.PSQL_USER,
-    host: process.env.PGHOST || process.env.PSQL_HOST,
-    database: process.env.PGDATABASE || process.env.PSQL_DATABASE,
-    password: process.env.PGPASSWORD || process.env.PSQL_PASSWORD,
-    port: process.env.PGPORT || process.env.PSQL_PORT,
+    connectionString: process.env.DATABASE_URL,
     ssl: process.env.SSL_MODE === 'true' ? {rejectUnauthorized: false} : false
 });
 
