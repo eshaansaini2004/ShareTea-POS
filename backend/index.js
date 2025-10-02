@@ -730,4 +730,5 @@ app.post('/api/business/close', async (req, res) => {
 // Start server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    console.log('CORS updated for Vercel domain');
 });
