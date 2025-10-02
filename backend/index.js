@@ -7,7 +7,14 @@ const cors = require('cors'); // might be needed
 const app = express();
 const port = 8080;
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        'https://share-tea-pos.vercel.app',
+        'http://localhost:3000',
+        'http://localhost:3001'
+    ],
+    credentials: true
+}));
 app.use(express.json());
 
 const pool = new Pool({
