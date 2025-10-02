@@ -11,10 +11,30 @@ const path = require('path');
 require('dotenv').config();
 
 // Database configuration
-const dbConfig = {
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.SSL_MODE === 'true' ? { rejectUnauthorized: false } : false
-};
+let dbConfig;
+if (process.env.DATABASE_PUBLIC_URL) {
+  // Use DATABASE_PUBLIC_URL for external connections (like local setup)
+  dbConfig = {
+    connectionString: process.env.DATABASE_PUBLIC_URL,
+    ssl: process.env.SSL_MODE === 'true' ? { rejectUnauthorized: false } : false
+  };
+} else if (process.env.DATABASE_URL) {
+  // Use DATABASE_URL if available (Railway internal)
+  dbConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.SSL_MODE === 'true' ? { rejectUnauthorized: false } : false
+  };
+} else {
+  // Fallback to individual variables (local development)
+  dbConfig = {
+    user: process.env.PGUSER || process.env.PSQL_USER || 'postgres',
+    host: process.env.PGHOST || process.env.PSQL_HOST || 'localhost',
+    database: process.env.PGDATABASE || process.env.PSQL_DATABASE || 'tea_shop_db',
+    password: process.env.PGPASSWORD || process.env.PSQL_PASSWORD || 'password',
+    port: process.env.PGPORT || process.env.PSQL_PORT || 5432,
+    ssl: process.env.SSL_MODE === 'true' ? { rejectUnauthorized: false } : false
+  };
+}
 
 async function setupDatabase() {
   const pool = new Pool(dbConfig);
