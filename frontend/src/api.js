@@ -49,10 +49,24 @@ export const fetchProducts = async () => {
         });
 
         console.log('📡 API Response status:', response.status);
+        console.log('📡 API Response headers:', response.headers);
+        
         if (!response.ok) {
-            throw new Error("Network response was not ok");
+            const errorText = await response.text();
+            console.error('❌ API Error Response:', errorText);
+            throw new Error(`Network response was not ok: ${response.status} - ${errorText}`);
         }
-        const data = await response.json();
+        
+        const responseText = await response.text();
+        console.log('📡 Raw response:', responseText.substring(0, 200) + '...');
+        
+        // Check if response is HTML instead of JSON
+        if (responseText.trim().startsWith('<!doctype') || responseText.trim().startsWith('<html')) {
+            console.error('❌ Received HTML instead of JSON:', responseText.substring(0, 500));
+            throw new Error('Received HTML response instead of JSON. Check API URL configuration.');
+        }
+        
+        const data = JSON.parse(responseText);
         console.log('✅ Products loaded:', data.length, 'items');
         return data;
     }
@@ -107,9 +121,21 @@ export const fetchTransactions = async () => {
         });
 
         if (!response.ok) {
-            throw new Error("Network response was not ok");
+            const errorText = await response.text();
+            console.error('❌ Transactions API Error Response:', errorText);
+            throw new Error(`Network response was not ok: ${response.status} - ${errorText}`);
         }
-        const transactions = await response.json();
+        
+        const responseText = await response.text();
+        console.log('📡 Transactions raw response:', responseText.substring(0, 200) + '...');
+        
+        // Check if response is HTML instead of JSON
+        if (responseText.trim().startsWith('<!doctype') || responseText.trim().startsWith('<html')) {
+            console.error('❌ Received HTML instead of JSON for transactions:', responseText.substring(0, 500));
+            throw new Error('Received HTML response instead of JSON. Check API URL configuration.');
+        }
+        
+        const transactions = JSON.parse(responseText);
         // the backend now sorts transactions by purchase_date and customer_transaction_num
         // but we'll keep this sort to ensure backward compatibility
         if (transactions.length > 0) {
