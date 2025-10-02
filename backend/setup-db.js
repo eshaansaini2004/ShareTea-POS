@@ -21,7 +21,12 @@ const dbConfig = {
 };
 
 async function setupDatabase() {
-  const pool = new Pool(dbConfig);
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
   
   try {
     console.log('🚀 Starting database setup...');
