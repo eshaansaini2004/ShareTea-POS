@@ -1,9 +1,14 @@
 // contains all api functions for communicating with the backend server
 
 // load environment variables for api configuration
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL?.replace(/\/$/, '') || 'https://blissful-radiance-production.up.railway.app'; // Remove trailing slash
 const API_KEY = process.env.REACT_APP_API_KEY;
 const OPENWEATHER_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
+
+console.log('🔧 Environment check:');
+console.log('REACT_APP_API_URL raw:', process.env.REACT_APP_API_URL);
+console.log('API_URL processed:', API_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
 
 // Use mock API if no backend is available
 const USE_MOCK_API = !API_URL;
@@ -33,7 +38,10 @@ const getHeaders = () => {
 export const fetchProducts = async () => {
     console.log('🔍 fetchProducts called');
     console.log('API_URL:', API_URL);
+    console.log('API_URL type:', typeof API_URL);
+    console.log('API_URL length:', API_URL ? API_URL.length : 'undefined');
     console.log('USE_MOCK_API:', USE_MOCK_API);
+    console.log('Full URL will be:', `${API_URL}/api/products`);
     
     // Use mock data if no backend is available
     if (USE_MOCK_API) {
