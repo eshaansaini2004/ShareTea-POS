@@ -12,11 +12,11 @@ require('dotenv').config();
 
 // Database configuration
 const dbConfig = {
-  user: process.env.PSQL_USER || 'postgres',
-  host: process.env.PSQL_HOST || 'localhost',
-  database: process.env.PSQL_DATABASE || 'tea_shop_db',
-  password: process.env.PSQL_PASSWORD || 'password',
-  port: process.env.PSQL_PORT || 5432,
+  user: process.env.PGUSER || process.env.PSQL_USER || 'postgres',
+  host: process.env.PGHOST || process.env.PSQL_HOST || 'localhost',
+  database: process.env.PGDATABASE || process.env.PSQL_DATABASE || 'tea_shop_db',
+  password: process.env.PGPASSWORD || process.env.PSQL_PASSWORD || 'password',
+  port: process.env.PGPORT || process.env.PSQL_PORT || 5432,
   ssl: process.env.SSL_MODE === 'true' ? { rejectUnauthorized: false } : false
 };
 
