@@ -1,7 +1,12 @@
 // contains all api functions for communicating with the backend server
 
 // load environment variables for api configuration
-const API_URL = process.env.REACT_APP_API_URL?.replace(/\/$/, '') || 'https://blissful-radiance-production.up.railway.app'; // Remove trailing slash
+// Get API URL and handle empty strings
+const rawApiUrl = process.env.REACT_APP_API_URL;
+const API_URL = (rawApiUrl && rawApiUrl.trim() && rawApiUrl !== 'undefined') 
+    ? rawApiUrl.replace(/\/$/, '') // Remove trailing slash
+    : 'https://blissful-radiance-production.up.railway.app'; // Fallback to Railway URL
+
 const API_KEY = process.env.REACT_APP_API_KEY;
 const OPENWEATHER_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
 
@@ -9,9 +14,10 @@ console.log('🔧 Environment check:');
 console.log('REACT_APP_API_URL raw:', process.env.REACT_APP_API_URL);
 console.log('API_URL processed:', API_URL);
 console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('Will use Railway backend:', API_URL === 'https://blissful-radiance-production.up.railway.app');
 
-// Use mock API if no backend is available
-const USE_MOCK_API = !API_URL;
+// Never use mock API since we always have a backend URL now
+const USE_MOCK_API = false;
 
 let mockModulePromise = null;
 const getMockModule = async () => {
